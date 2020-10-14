@@ -25,7 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 import java.util.Locale;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private GoogleMap mMap; // Google Map Instance
     LocationManager locationManager; // Lokasyon Yöneticimiz
@@ -44,6 +44,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapLongClickListener(this); // Haritaya bu özelliği eklememiz gerekiyor
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);  // Kullanıcı lokasyonunu almak için kullanıyoruz
         locationListener = new LocationListener() {
@@ -126,5 +127,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        // Kullanıcının haritada bir noktaya uzun uzun tıklaması ile çalışan fonksiyon
+        mMap.clear(); // Haritanın üzerindeki fazlalık Marker nesnelerini temizliyoruz
+
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault()); // Adres almak için geocoder kullanıyoruz
+
+        try {
+            // Yukarıda yazdığımız kodları tekrar ediyoruz
+            List<Address> addressList = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (addressList != null && addressList.size() > 0) {
+                if (addressList.get(0).getAddressLine(0) != null){
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(addressList.get(0).getAddressLine(0)));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
