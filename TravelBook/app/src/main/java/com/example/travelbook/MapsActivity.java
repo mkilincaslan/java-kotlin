@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,6 +21,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -52,6 +57,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(userLocation).title("Your Location"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
+
+                // Adres almak için Google map sağlayıcı olarak Geocoder kullanırız
+                // İlk verdiğimiz değer context, o yüzden getApplicationContext kullandık
+                // İkinci değer ise Locale dediğimiz bir yöreye, dile ait adres sunmak o sebeple kullanıcının telefonunda kullandığı varsayılan diline göre sunuyoruz
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                try {
+                    // latitude, longitude ve kaç adet sonuç almak istediğimizi belirtiyoruz
+                    // Hata olması durumuna karşılık try-catch blokları içerisinde yazıyoruz
+                    // Bize adres tipinde bir liste döneceği için Address tipinde bir Liste tanımlayarak dönen verileri onda saklıyoruz
+                    List<Address> addressList = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if (addressList != null && addressList.size() > 0) {
+                        System.out.println("adres" + addressList.get(0));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
 
