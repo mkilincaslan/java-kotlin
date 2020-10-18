@@ -3,6 +3,7 @@ package com.example.instaclonefirebase;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -13,7 +14,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity {
+public class AuthActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     EditText txtEmail, txtPassword;
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_auth);
 
         // firebase instance oluşturma
         firebaseAuth = FirebaseAuth.getInstance();
@@ -33,7 +34,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void signInAction (View view) {
+        String email = txtEmail.getText().toString();
+        String password = txtPassword.getText().toString();
 
+        if (email.matches("") || password.matches("")) {
+            Toast.makeText(this, "email or password cannot be empty", Toast.LENGTH_LONG).show();
+        } else {
+
+            // firebase kullanarak email ve password ile kullanıcı giriş işlemi
+            firebaseAuth.signInWithEmailAndPassword(email, password)
+                    .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                        @Override
+                        public void onSuccess(AuthResult authResult) {
+                            Intent intent = new Intent(AuthActivity.this, FeedActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AuthActivity.this, e.getLocalizedMessage().toString(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        }
     }
 
     public void signUpAction (View view) {
@@ -41,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         String password = txtPassword.getText().toString();
 
         if (email.matches("") || password.matches("")) {
-            Toast.makeText(this, "email or password cannot be empty", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "email or password cannot be empty", Toast.LENGTH_LONG).show();
         } else {
 
             // firebase email ve password kullanarak kullanıcı oluşturma
@@ -49,13 +72,14 @@ public class MainActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-
+                            Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
+                            startActivity(intent);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-
+                            Toast.makeText(AuthActivity.this, e.getLocalizedMessage().toString(), Toast.LENGTH_LONG).show();
                         }
                     });
         }
