@@ -25,3 +25,4 @@ hs_err_pid*
 TravelBook/ap/src/main/res/values/google_maps_api.xml
 TravelBook/app/src/debug/res/values/google_maps_api.xml
 TravelBook/app/src/main/AndroidManifest.xml
+InstaCloneFirebase/app/google-services.json
