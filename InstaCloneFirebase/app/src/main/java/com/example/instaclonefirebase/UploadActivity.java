@@ -19,15 +19,26 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 
 public class UploadActivity extends AppCompatActivity {
 
     ImageView postImage;
     EditText postComment;
     Bitmap bitmap;
+    Uri imageURI;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +47,34 @@ public class UploadActivity extends AppCompatActivity {
 
         postImage = findViewById(R.id.imageView);
         postComment = findViewById(R.id.txtComment);
+        storage = FirebaseStorage.getInstance(); // Get instance from Firebase Storage
+        storageReference = storage.getReference();
     }
 
     public void upload (View view) {
         // Upload data to server
+        String comment = postComment.getText().toString();
 
+        if (imageURI != null /* && !comment.matches("") */) {
+            String[] imageName = imageURI.toString().split("/");
+            storageReference
+                    .child("images") // main folder - ana dosya ismi
+                    .child("posts") // child folder - alt dosya ismi
+                    .child("post-" + imageName[imageName.length - 1]) // image name - fotoğraf ismi
+                    .putFile(imageURI)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(UploadActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG);
+                        }
+                    });
+        }
     }
 
     public void selectImage (View view) {
@@ -81,7 +115,7 @@ public class UploadActivity extends AppCompatActivity {
             // Create a image uri variable
             // Gelen data içerisinden fotoğrafın kaynağını aldığımız değişken
 
-            Uri imageURI = data.getData();
+            imageURI = data.getData();
             try {
                 // Check the SDK version for decode image
                 // SDK versiyon kontrolü ile fotoğrafı decode ettiğimiz kısım
