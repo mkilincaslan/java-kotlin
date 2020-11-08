@@ -23,6 +23,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -30,6 +35,7 @@ import com.google.firebase.storage.UploadTask;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -39,6 +45,8 @@ public class UploadActivity extends AppCompatActivity {
     Uri imageURI;
     private FirebaseStorage storage;
     private StorageReference storageReference;
+    private FirebaseFirestore firebaseFirestore;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +57,13 @@ public class UploadActivity extends AppCompatActivity {
         postComment = findViewById(R.id.txtComment);
         storage = FirebaseStorage.getInstance(); // Get instance from Firebase Storage
         storageReference = storage.getReference();
+        firebaseFirestore = FirebaseFirestore.getInstance(); // Get instance from Firebase FireStore
+        firebaseAuth = FirebaseAuth.getInstance(); // Get instance from Firebase Auth
     }
 
     public void upload (View view) {
         // Upload data to server
-        String comment = postComment.getText().toString();
+        final String comment = postComment.getText().toString();
 
         if (imageURI != null /* && !comment.matches("") */) {
             final String[] imageName = imageURI.toString().split("/");
@@ -74,6 +84,30 @@ public class UploadActivity extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     // Get url success
                                     String downloadURL = uri.toString();
+                                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser(); // Get current user
+                                    String userEmail = firebaseUser.getEmail();
+
+                                    HashMap<String, Object> postData = new HashMap<>(); // Firebase FireStore gets a hashmap object
+                                    postData.put("userEmail", userEmail);
+                                    postData.put("downloadURL", downloadURL);
+                                    postData.put("comment", comment);
+                                    postData.put("date", FieldValue.serverTimestamp());
+
+                                    firebaseFirestore.collection("Posts").add(postData).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            // Success Status
+                                            Intent feedIntent = new Intent(UploadActivity.this, FeedActivity.class);
+                                            feedIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(feedIntent);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            // Failure Status
+                                            Toast.makeText(UploadActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
                                 }
                             });
                         }
