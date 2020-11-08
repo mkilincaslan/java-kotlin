@@ -56,7 +56,7 @@ public class UploadActivity extends AppCompatActivity {
         String comment = postComment.getText().toString();
 
         if (imageURI != null /* && !comment.matches("") */) {
-            String[] imageName = imageURI.toString().split("/");
+            final String[] imageName = imageURI.toString().split("/");
             storageReference
                     .child("images") // main folder - ana dosya ismi
                     .child("posts") // child folder - alt dosya ismi
@@ -65,7 +65,17 @@ public class UploadActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+
+                            // Get download URL from firebase storage - Firebase depoya kaydettiğimiz fotoğrafın URL alacağız
+
+                            StorageReference imageReference = FirebaseStorage.getInstance().getReference("images/posts/post-" + imageName[imageName.length - 1]); // Create a firebase storage reference - Bunun için bir depo referansı kuruyoruz
+                            imageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    // Get url success
+                                    String downloadURL = uri.toString();
+                                }
+                            });
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
