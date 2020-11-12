@@ -84,21 +84,23 @@ public class UploadActivity extends AppCompatActivity {
                                 public void onSuccess(Uri uri) {
                                     // Get url success
                                     String downloadURL = uri.toString();
-                                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser(); // Get current user
+                                    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser(); // Get current user - Aktif kullanıcıyı al
                                     String userEmail = firebaseUser.getEmail();
 
-                                    HashMap<String, Object> postData = new HashMap<>(); // Firebase FireStore gets a hashmap object
+                                    HashMap<String, Object> postData = new HashMap<>(); // Firebase FireStore gets a hashmap object - Firebase FireStore HashMap halinde objeler kabul eder
+                                    // Create the data for send to firestore - firestore'a gönderilecek veri kümesini hazırlıyoruz
                                     postData.put("userEmail", userEmail);
                                     postData.put("downloadURL", downloadURL);
                                     postData.put("comment", comment);
                                     postData.put("date", FieldValue.serverTimestamp());
 
+                                    // Write the collection name which we will send the data - Verileri göndereceğimiz veritabanı döküman yığınının adını yazıyoruz
                                     firebaseFirestore.collection("Posts").add(postData).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                         @Override
                                         public void onSuccess(DocumentReference documentReference) {
                                             // Success Status
                                             Intent feedIntent = new Intent(UploadActivity.this, FeedActivity.class);
-                                            feedIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            feedIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // Block the get back - Geri dönülmesini engellemek
                                             startActivity(feedIntent);
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
