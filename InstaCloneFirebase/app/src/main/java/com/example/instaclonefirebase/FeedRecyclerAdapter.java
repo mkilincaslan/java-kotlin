@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -41,6 +43,7 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
     public void onBindViewHolder(@NonNull PostHolder holder, int position) {
         holder.userEmail.setText(userEmailList.get(position));
         holder.commentText.setText(postCommentList.get(position));
+        Picasso.get().load(postImageList.get(position)).into(holder.postImage);
     }
 
     @Override
