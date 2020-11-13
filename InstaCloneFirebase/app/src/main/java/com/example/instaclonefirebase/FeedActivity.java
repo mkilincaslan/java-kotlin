@@ -3,6 +3,8 @@ package com.example.instaclonefirebase;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ public class FeedActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firebaseFirestore;
+    FeedRecyclerAdapter feedRecyclerAdapter; // RecycleView adapter which we will use - Kullanacağımız recyclerView adapter
     ArrayList<String> userEmailOfFb;
     ArrayList<String> userCommentOfFb;
     ArrayList<String> userImageOfFb;
@@ -73,6 +76,15 @@ public class FeedActivity extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance();
 
         getData();
+
+        // RecyclerView
+
+        RecyclerView recyclerView = findViewById(R.id.postsList); // Get the recyclerView - RecyclerView içeri dahil et
+        recyclerView.setLayoutManager(new LinearLayoutManager(this)); // Set a layout with this activity - Buradaki aktiviteyi içerik olarak arayüz atama
+
+        feedRecyclerAdapter = new FeedRecyclerAdapter(userEmailOfFb, userCommentOfFb, userImageOfFb); // The data send to the constructor - Verileri yapıcı metoda gönder
+
+        recyclerView.setAdapter(feedRecyclerAdapter); // Bind the adapter to the recyclerView - Adaptörü recyclerView bağla
     }
 
     public void getData() {
@@ -92,6 +104,8 @@ public class FeedActivity extends AppCompatActivity {
                             userEmailOfFb.add(userEmail);
                             userCommentOfFb.add(comment);
                             userImageOfFb.add(downloadURL);
+
+                            feedRecyclerAdapter.notifyDataSetChanged(); // Notify the adapter - Adaptörü yeni veri geldiğine karşın uyarı
                         }
                     }
                 }
