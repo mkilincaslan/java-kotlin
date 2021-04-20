@@ -13,11 +13,13 @@ public class ParseStarter extends Application {
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG); // Define logcat setting
 
         Parse.initialize(
-                new Parse.Configuration.Builder(this)
-                        .applicationId(getString(R.string.applicationId))
-                        .clientKey(getString(R.string.clientKey))
-                        .server(getString(R.string.server))
-                        .build()
+            new Parse
+                .Configuration
+                .Builder(this)
+                .applicationId(getString(R.string.applicationId))
+                .clientKey(getString(R.string.clientKey))
+                .server(getString(R.string.server))
+                .build()
         );
     }
 }
