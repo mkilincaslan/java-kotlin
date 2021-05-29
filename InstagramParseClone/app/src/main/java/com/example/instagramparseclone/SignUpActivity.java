@@ -2,6 +2,7 @@ package com.example.instagramparseclone;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,13 @@ public class SignUpActivity extends AppCompatActivity {
 
         txtName = findViewById(R.id.txtName);
         txtPassword = findViewById(R.id.txtPassword);
+
+        ParseUser user = ParseUser.getCurrentUser();
+
+        if (user != null) {
+            Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
+            startActivity(intent);
+        }
     }
 
     public void register (View view) {
@@ -38,7 +46,8 @@ public class SignUpActivity extends AppCompatActivity {
                 if (e != null) {
                     Toast.makeText(SignUpActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(SignUpActivity.this, "Kullanici olusturuldu", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
+                    startActivity(intent);
                 }
             }
         });
@@ -51,7 +60,8 @@ public class SignUpActivity extends AppCompatActivity {
                 if (e != null) {
                     Toast.makeText(SignUpActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(SignUpActivity.this, "Kullanici giris oldu", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), FeedActivity.class);
+                    startActivity(intent);
                 }
             }
         });
