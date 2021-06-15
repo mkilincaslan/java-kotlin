@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InstagramParseClone">
-        <activity android:name=".FeedActivity"></activity>
+        <activity android:name=".PostActivity"></activity>
+        <activity android:name=".FeedActivity" />
         <activity android:name=".SignUpActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
