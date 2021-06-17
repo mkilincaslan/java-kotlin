@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.parse.LogOutCallback;
@@ -15,6 +16,8 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 public class FeedActivity extends AppCompatActivity {
+    
+    ListView postList;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,5 +55,7 @@ public class FeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
+
+        postList = findViewById(R.id.postListView);
     }
 }
