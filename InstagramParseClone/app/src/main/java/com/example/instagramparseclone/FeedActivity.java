@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,9 +16,15 @@ import com.parse.LogOutCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
+
 public class FeedActivity extends AppCompatActivity {
     
     ListView postList;
+    ArrayList<String> usernameList;
+    ArrayList<String> userCommentList;
+    ArrayList<Bitmap> postImageList;
+    PostClass postClassAdapter;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,5 +64,19 @@ public class FeedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_feed);
 
         postList = findViewById(R.id.postListView);
+
+        usernameList = new ArrayList<>();
+        userCommentList = new ArrayList<>();
+        postImageList = new ArrayList<>();
+
+        postClassAdapter = new PostClass(usernameList, userCommentList, postImageList, this);
+
+        postList.setAdapter(postClassAdapter);
+
+        getData();
+    }
+
+    public void getData() {
+
     }
 }
