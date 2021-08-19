@@ -10,8 +10,9 @@
         android:id="@+id/txtUsername_postView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="username"
-        android:textSize="10pt"/>
+        android:layout_marginLeft="10dp"
+        android:hint="username"
+        android:textSize="10pt" />
 
     <ImageView
         android:id="@+id/postImage_postView"
@@ -24,6 +25,17 @@
         android:id="@+id/txtComment_postView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="username"
-        android:textSize="10pt"/>
+        android:layout_marginLeft="10dp"
+        android:hint="comment"
+        android:textSize="10pt" />
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:hint="date"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/black"
+        android:textSize="8pt" />
 </LinearLayout>
